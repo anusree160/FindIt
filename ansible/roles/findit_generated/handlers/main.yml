@@ -1,0 +1,6 @@
+---
+- name: Restart FindIt
+  service:
+    name: findit
+    state: restarted
+    enabled: yes

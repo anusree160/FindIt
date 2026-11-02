@@ -1,0 +1,5 @@
+---
+app_name: findit
+app_port: 5000
+app_directory: /opt/findit
+app_user: www-data

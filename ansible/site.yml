@@ -1,0 +1,7 @@
+---
+- name: Configure FindIt Application
+  hosts: servers
+  become: yes
+
+  roles:
+    - findit_generated

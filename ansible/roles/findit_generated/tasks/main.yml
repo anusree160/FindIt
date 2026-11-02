@@ -1,0 +1,55 @@
+---
+- name: Install Python and unzip
+  apt:
+    name:
+      - python3
+      - python3-venv
+      - unzip
+    state: present
+    update_cache: yes
+
+- name: Create application directory
+  file:
+    path: "{{ app_directory }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: '0755'
+
+- name: Copy application artifact
+  copy:
+    src: "{{ playbook_dir }}/../findit-build.zip"
+    dest: "{{ app_directory }}/findit-build.zip"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Extract application artifact
+  unarchive:
+    src: "{{ app_directory }}/findit-build.zip"
+    dest: "{{ app_directory }}"
+    remote_src: yes
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Create Python virtual environment
+  command: python3 -m venv {{ app_directory }}/venv
+  args:
+    creates: "{{ app_directory }}/venv/bin/python"
+
+- name: Install application dependencies
+  pip:
+    requirements: "{{ app_directory }}/requirements.txt"
+    virtualenv: "{{ app_directory }}/venv"
+
+- name: Configure FindIt service
+  template:
+    src: findit.service.j2
+    dest: /etc/systemd/system/findit.service
+  notify: Restart FindIt
+
+- name: Enable and start FindIt service
+  systemd:
+    name: findit
+    state: started
+    enabled: yes
+    daemon_reload: yes

@@ -1,0 +1,12 @@
+[Unit]
+Description=FindIt REST API
+After=network.target
+
+[Service]
+User={{ app_user }}
+WorkingDirectory={{ app_directory }}
+ExecStart={{ app_directory }}/venv/bin/python {{ app_directory }}/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
