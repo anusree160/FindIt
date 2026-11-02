@@ -15,6 +15,9 @@ def home():
 def health():
     return jsonify({"status": "healthy"})
 
+@app.route("/items/count")
+def item_count():
+    return jsonify({"total_items": len(items)})
 
 @app.route("/items", methods=["POST"])
 def add_item():
