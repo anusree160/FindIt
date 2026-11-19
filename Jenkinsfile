@@ -7,27 +7,31 @@ pipeline {
     }
 
     stages {
-        stage('Install Dependencies') {
+        stage('Checkout') {
             steps {
-                sh '''
-                    python3 -m venv .venv
-                    .venv/bin/pip install -r requirements.txt
-                    .venv/bin/pip install pytest
-                '''
+                echo 'Source code checked out from Git'
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Unit Tests') {
             steps {
-                sh '.venv/bin/python -m pytest -v'
+                sh 'mvn clean test'
             }
         }
 
-        stage('Build Artifact') {
+        stage('Build Application') {
             steps {
-                sh 'zip -r findit-build.zip app.py requirements.txt tests'
-                archiveArtifacts artifacts: 'findit-build.zip'
+                sh 'mvn package -DskipTests'
+            }
+        }
+
+        stage('Archive Artifact') {
+            steps {
+                archiveArtifacts artifacts: 'target/findit-1.0.0.jar',
+                                 fingerprint: true
             }
         }
     }
 }
+
+

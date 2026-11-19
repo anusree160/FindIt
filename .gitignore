@@ -7,3 +7,4 @@ venv/
 findit-build.zip
 kubectl
 minikube-linux-amd64
+target/
